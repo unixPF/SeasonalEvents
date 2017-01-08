@@ -1,4 +1,4 @@
-package com.github.crosshearts.seasonalevents.events.seizonsiki;
+package com.github.unchama.seasonalevents.events.seizonsiki;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -17,7 +17,7 @@ import org.bukkit.event.Listener;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 
-import com.github.crosshearts.seasonalevents.SeasonalEvents;
+import com.github.unchama.seasonalevents.SeasonalEvents;
 import com.github.unchama.seichiassist.SeichiAssist;
 import com.github.unchama.seichiassist.data.Mana;
 import com.github.unchama.seichiassist.data.PlayerData;
@@ -26,7 +26,7 @@ public class Seizonsiki {
 	private SeasonalEvents parent;
 	private SeizonsikiListener listener;
 	private boolean enable = false;
-	private boolean isdrop = false;
+	public boolean isdrop = false;
 	public static final String DROPDAY = "2017-01-16";
 	public static final String DROPDAYDISP = "2017/01/15";
 	public static final String FINISH = "2017-01-22";

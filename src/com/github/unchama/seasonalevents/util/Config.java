@@ -1,8 +1,8 @@
-package com.github.crosshearts.seasonalevents.util;
+package com.github.unchama.seasonalevents.util;
 
 import org.bukkit.configuration.file.FileConfiguration;
 
-import com.github.crosshearts.seasonalevents.SeasonalEvents;
+import com.github.unchama.seasonalevents.SeasonalEvents;
 
 public class Config {
 	private static FileConfiguration config;
