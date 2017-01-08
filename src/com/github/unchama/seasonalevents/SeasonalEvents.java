@@ -6,7 +6,7 @@ import com.github.unchama.seasonalevents.events.seizonsiki.Seizonsiki;
 import com.github.unchama.seasonalevents.util.Config;
 
 public class SeasonalEvents extends JavaPlugin {
-	public Config config;
+	public static Config config;
 	private Seizonsiki seizonsiki;
 
 	@Override

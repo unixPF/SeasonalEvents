@@ -43,4 +43,8 @@ public class Config {
 	public double getDropPer() {
 		return Double.parseDouble(config.getString("dropper"));
 	}
+
+	public String getWikiAddr() {
+		return config.getString("wiki");
+	}
 }

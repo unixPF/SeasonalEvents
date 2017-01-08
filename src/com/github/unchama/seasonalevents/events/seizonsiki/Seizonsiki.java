@@ -65,7 +65,7 @@ public class Seizonsiki {
 	// プレイヤーにゾンビが倒されたとき発生
 	public void killEvent(Player killer, Location loc) {
 		if (isdrop) {
-			double dp = parent.config.getDropPer();
+			double dp = SeasonalEvents.config.getDropPer();
 			double rand = Math.random() * 100;
 			if (rand < dp) {
 				// 報酬をドロップ
