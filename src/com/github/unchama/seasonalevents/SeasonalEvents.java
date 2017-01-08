@@ -1,12 +1,12 @@
-package com.github.crosshearts.seasonalevents;
+package com.github.unchama.seasonalevents;
 
 import org.bukkit.plugin.java.JavaPlugin;
 
-import com.github.crosshearts.seasonalevents.events.seizonsiki.Seizonsiki;
-import com.github.crosshearts.seasonalevents.util.Config;
+import com.github.unchama.seasonalevents.events.seizonsiki.Seizonsiki;
+import com.github.unchama.seasonalevents.util.Config;
 
 public class SeasonalEvents extends JavaPlugin {
-	public Config config;
+	public static Config config;
 	private Seizonsiki seizonsiki;
 
 	@Override
