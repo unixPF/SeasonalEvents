@@ -12,8 +12,13 @@ import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.Sound;
+import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Player;
+import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
+import org.bukkit.event.entity.EntityDeathEvent;
+import org.bukkit.event.player.PlayerItemConsumeEvent;
+import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 
@@ -22,29 +27,23 @@ import com.github.unchama.seichiassist.SeichiAssist;
 import com.github.unchama.seichiassist.data.Mana;
 import com.github.unchama.seichiassist.data.PlayerData;
 
-public class Seizonsiki {
-	private SeasonalEvents parent;
-	private SeizonsikiListener listener;
-	private boolean enable = false;
-	public boolean isdrop = false;
-	public static final String DROPDAY = "2017-01-16";
-	public static final String DROPDAYDISP = "2017/01/15";
-	public static final String FINISH = "2017-01-22";
-	public static final String FINISHDISP = "2017/01/21";
+public class Seizonsiki implements Listener {
+	private static boolean isdrop = false;
+	private static final String DROPDAY = "2017-01-16";
+	private static final String DROPDAYDISP = "2017/01/15";
+	private static final String FINISH = "2017-01-22";
+	private static final String FINISHDISP = "2017/01/21";
 
 	public Seizonsiki(SeasonalEvents parent) {
 		try {
-			this.parent = parent;
-			// リスナー生成
-			listener = new SeizonsikiListener(this);
-
 			// イベント開催中か判定
 			Date now = new Date();
 			SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd");
 			Date finishdate = format.parse(FINISH);
 			Date dropdate = format.parse(DROPDAY);
 			if (now.before(finishdate)) {
-				enable = true;
+				// リスナーを登録
+				parent.getServer().getPluginManager().registerEvents(this, parent);
 			}
 			if (now.before(dropdate)) {
 				isdrop = true;
@@ -54,16 +53,32 @@ public class Seizonsiki {
 		}
 	}
 
-	public boolean getEnable() {
-		return enable;
+	@EventHandler
+	public void onEntityDeath(EntityDeathEvent event) {
+		if (event.getEntity().getType().equals(EntityType.ZOMBIE) &&
+				(event.getEntity().getKiller() != null)) {
+			killEvent(event.getEntity().getKiller(), event.getEntity().getLocation());
+		}
 	}
 
-	public Listener getListener() {
-		return listener;
+	@EventHandler
+	public void onplayerJoinEvent(PlayerJoinEvent event) {
+		if (isdrop) {
+			event.getPlayer().sendMessage(ChatColor.LIGHT_PURPLE + Seizonsiki.DROPDAYDISP + "までの期間限定で、シーズナルイベント『チャラゾンビたちの成ゾン式！』を開催しています。");
+			event.getPlayer().sendMessage(ChatColor.LIGHT_PURPLE + "詳しくは下記wikiをご覧ください。");
+			event.getPlayer().sendMessage(ChatColor.DARK_GREEN + "" + ChatColor.UNDERLINE + SeasonalEvents.config.getWikiAddr());
+		}
+	}
+
+	@EventHandler
+	public void onPlayerItemConsumeEvent(PlayerItemConsumeEvent event) {
+		if (checkPrize(event.getItem())) {
+			usePrize(event.getPlayer());
+		}
 	}
 
 	// プレイヤーにゾンビが倒されたとき発生
-	public void killEvent(Player killer, Location loc) {
+	private void killEvent(Player killer, Location loc) {
 		if (isdrop) {
 			double dp = SeasonalEvents.config.getDropPer();
 			double rand = Math.random() * 100;
@@ -75,7 +90,7 @@ public class Seizonsiki {
 	}
 
 	// チャラゾンビの肉判定
-	public boolean checkPrize(ItemStack item) {
+	private boolean checkPrize(ItemStack item) {
 		// Lore取得
 		if(!item.hasItemMeta() || !item.getItemMeta().hasLore()) {
 			return false;
@@ -88,7 +103,7 @@ public class Seizonsiki {
 	}
 
 	// アイテム使用時の処理
-	public void usePrize(Player player) {
+	private void usePrize(Player player) {
 		UUID uuid = player.getUniqueId();
 		PlayerData pd = SeichiAssist.playermap.get(uuid);
 		Mana mana = pd.activeskilldata.mana;
@@ -117,7 +132,7 @@ public class Seizonsiki {
 		lore.add(ChatColor.RESET + "" +  ChatColor.GRAY + "腐りやすいため賞味期限を超えると効果が無くなる。");
 		lore.add("");
 		lore.add(ChatColor.RESET + "" +  ChatColor.DARK_GREEN + "賞味期限：" + FINISHDISP);
-		lore.add(ChatColor.RESET + "" +  ChatColor.RESET + "" +  ChatColor.AQUA + "マナ回復（10％）" + ChatColor.GRAY + " （期限内）");
+		lore.add(ChatColor.RESET + "" +  ChatColor.AQUA + "マナ回復（10％）" + ChatColor.GRAY + " （期限内）");
 		return lore;
 	}
 }
